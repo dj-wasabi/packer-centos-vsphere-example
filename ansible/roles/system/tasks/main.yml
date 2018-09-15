@@ -1,0 +1,76 @@
+---
+# tasks file for system
+
+- name: "Restrict Dynamic Mounting and Unmounting of Filesystems"
+  template:
+    src: hardening.conf.j2
+    dest: /etc/modprobe.d/hardening.conf
+
+- name: "Kernel Parameters"
+  template:
+    src: sysctl.conf.j2
+    dest: /etc/sysctl.conf
+
+- name: "Set Security Limits to Prevent DoS"
+  template:
+    src: limits.conf.j2
+    dest: /etc/security/limits.conf
+
+- name: "Disable Zeroconf Networking"
+  lineinfile:
+    path: /etc/sysconfig/network
+    line: 'NOZEROCONF=yes'
+
+- name: "Removal of not needed accounts"
+  user:
+    name: "{{ item }}"
+    state: absent
+  with_items: "{{ removal_of_users }}"
+
+- name: "Removal of not needed groups"
+  group:
+    name: "{{ item }}"
+    state: absent
+  with_items: "{{ removal_of_groups }}"
+
+- name: ""
+  replace:
+    path: "{{ item }}"
+    regexp: 'nullok'
+    replace: ''
+  with_items:
+    - /etc/pam.d/system-auth-ac
+    - /etc/pam.d/password-auth-ac
+
+- name: "Set Interactive Session Timeout"
+  lineinfile:
+    path: /etc/profile
+    line: 'readonly TMOUT=900'
+
+- name: "Removal of Packages"
+  yum:
+    name: "{{ item }}"
+    state: absent
+  with_items: "{{ removal_of_packages }}"
+
+- name: "Installation of Packages"
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ installing_of_packages }}"
+
+- name: "Disable of Services"
+  systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: False
+  with_items: "{{ disable_of_services }}"
+  ignore_errors: True
+
+- name: "Enabling of Services"
+  systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: True
+  with_items: "{{ enable_of_services }}"
+  ignore_errors: True

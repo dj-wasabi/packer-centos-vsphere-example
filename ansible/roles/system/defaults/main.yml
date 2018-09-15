@@ -1,0 +1,108 @@
+---
+# defaults file for system
+
+kernel_hardening_conf:
+  - cramfs
+  - freevxfs
+  - jffs2
+  - hfs
+  - hfsplus
+  - squashfs
+  - udf
+  - fat
+  - vfat
+  - cifs
+  - nfs
+  - nfsv3
+  - nfsv4
+  - gfs2
+  - usb-storage
+  - bnep
+  - bluetooth
+  - btusb
+  - net-pf-31
+  - appletalk
+  - dccp
+  - sctp
+  - rds
+  - tipc
+
+limits_conf: []
+
+removal_of_users:
+  - adm
+  - ftp
+  - games
+  - lp
+
+removal_of_groups:
+  - games
+
+removal_of_packages:
+  - xinetd
+  - telnet-server
+  - rsh-server
+  - telnet
+  - rsh
+  - ypbind
+  - ypserv
+  - tfsp-server
+  - bind
+  - vsfptd
+  - dovecot
+  - squid
+  - net-snmpd
+  - talk-server
+  - talk
+  - postfix
+  - centos-logos
+  - GeoIP
+  - parted
+  - wpa_supplicant
+  - snappy
+  - jansson
+  - m4
+  - linux-firmware
+
+
+installing_of_packages:
+  - psacct
+
+disable_of_services:
+  - xinetd
+  - rexec
+  - rsh
+  - rlogin
+  - ypbind
+  - tftp
+  - certmonger
+  - cgconfig
+  - cgred
+  - cpuspeed
+  - kdump
+  - mdmonitor
+  - messagebus
+  - netconsole
+  - ntpdate
+  - oddjobd
+  - portreserve
+  - qpidd
+  - quota_nld
+  - rdisc
+  - rhnsd
+  - rhsmcertd
+  - saslauthd
+  - smartd
+  - sysstat
+  - atd
+  - nfslock
+  - named
+  - httpd
+  - dovecot
+  - squid
+  - snmpd
+
+enable_of_services:
+  - irqbalance
+  - psacct
+  - crond

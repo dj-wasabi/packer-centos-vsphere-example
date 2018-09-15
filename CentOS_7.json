@@ -1,0 +1,93 @@
+{
+  "variables": {
+    "git_commit": "",
+    "url": "http://centos.mirroring.pulsant.co.uk/7/isos/x86_64/CentOS-7-x86_64-NetInstall-1804.iso",
+    "checksum": "937bf0a7b0932817f84f7230f15ed88911bbbd85c0c958680792b7f8d8f9c1a9"
+  },
+  "provisioners": [
+    {
+      "type": "shell",
+      "execute_command": "sudo {{.Vars}} sh {{.Path}} {{user `git_commit`}}",
+      "scripts": [
+        "scripts/ansible.sh"
+      ]
+    },
+    {
+      "type": "ansible-local",
+      "playbook_file": "./ansible/local.yml",
+      "role_paths": [
+        "./ansible/roles/system"
+      ],
+      "inventory_file": "ansible/inventory"
+    },
+    {
+      "type": "shell",
+      "execute_command": "sudo {{.Vars}} sh {{.Path}}",
+      "scripts": [
+        "scripts/cleanup.sh",
+        "scripts/zerodisk.sh"
+      ]
+    }
+  ],
+  "post-processors": [
+    [ {
+      "type": "vsphere",
+      "cluster": "Cluster",
+      "datacenter": "{{user `vcenter_datacenter`}}",
+      "datastore": "ds_data",
+      "disk_mode": "thin",
+      "host": "{{user `vcenter_host`}}",
+      "password": "{{user `vcenter_password`}}",
+      "username": "{{user `vcenter_username`}}",
+      "vm_name": "Centos-7",
+      "vm_folder": "/",
+      "insecure": true,
+      "overwrite": true
+    },
+    {
+      "type": "vsphere-template",
+      "password": "{{user `vcenter_password`}}",
+      "username": "{{user `vcenter_username`}}",
+      "host": "{{user `vcenter_host`}}",
+      "datacenter": "{{user `vcenter_datacenter`}}",
+      "insecure": true
+    } ]
+  ],
+  "builders": [
+    {
+      "type": "vmware-iso",
+      "format": "ovf",
+      "iso_url": "{{user `url`}}",
+      "iso_checksum": "{{user `checksum`}}",
+      "iso_checksum_type": "sha256",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "ssh_wait_timeout": "20m",
+      "disk_size": "20480",
+      "disk_type_id": "0",
+      "guest_os_type": "centos7-64",
+      "headless": false,
+      "shutdown_command": "sudo /sbin/halt -p"",
+      "http_directory": "http",
+      "vmx_remove_ethernet_interfaces": true,
+      "boot_command": [
+        "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg<enter><wait>"
+      ],
+      "vmx_data": {
+        "memsize": "1024",
+        "numvcpus": "1",
+        "ethernet0.present": true,
+        "ethernet0.startConnected": true,
+        "ethernet0.connectionType": "custom",
+        "ethernet0.vnet": "vmnet8",
+        "ethernet1.present": true,
+        "ethernet1.startConnected": true,
+        "ethernet1.connectionType": "custom",
+        "ethernet1.vnet": "vmnet1"
+      },
+      "vmx_data_post": {
+        "floppy0.present": false
+      }
+    }
+  ]
+}

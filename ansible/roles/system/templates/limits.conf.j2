@@ -1,0 +1,31 @@
+# 4096 is a good starting point
+*      soft   nofile    4096
+*      hard   nofile    65536
+*      soft   nproc     4096
+*      hard   nproc     4096
+*      soft   locks     4096
+*      hard   locks     4096
+*      soft   stack     10240
+*      hard   stack     32768
+*      soft   memlock   64
+*      hard   memlock   64
+*      hard   maxlogins 10
+
+# Soft limit 32GB, hard 64GB
+*      soft   fsize     33554432
+*      hard   fsize     67108864
+
+# Limits for root
+root   soft   nofile    4096
+root   hard   nofile    65536
+root   soft   nproc     4096
+root   hard   nproc     4096
+root   soft   stack     10240
+root   hard   stack     32768
+root   soft   fsize     33554432
+
+{% if limits_conf is defined and limits_conf is iterable %}
+{% for entry in limits_conf %}
+{{ entry }}
+{% endfor %}
+{% endif %}

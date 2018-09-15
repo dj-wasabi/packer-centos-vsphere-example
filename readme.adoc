@@ -1,0 +1,53 @@
+= Packer
+
+== Introduction
+
+This repository contains a basic (demo) example for creating a CentOS 7 VMware image with Packer. A Virtual Machine will be created, several hardening actions takes place and the VM will be uploaded to a VCenter and then marked as a template.
+This template can then be used with a tool like terraform to deploy 1 or more servers.
+
+== Create VM
+
+=== Requirements
+
+The following requirements should be met before you can do something:
+
+* Install VMWare Workstation (Windows or Mac), or use VMWare player (Linux);
+* Download and install packer (https://www.packer.io/downloads.html);
+* Download the file from https://github.com/jetbrains-infra/packer-builder-vsphere/releases and place the file in root of this repository;
+* Have a VCenter with at least 1 Vsphere server running;
+* Have an account in VCenter with at least the privileges to create a VM and able to mark it as a template.
+
+=== Creds.json
+
+The `creds.json` file should contain the following specific VCenter variables.
+
+[source,json]
+----
+{
+  "vcenter_host": "<FQDN_OR_IP_VCENTER>",
+  "vcenter_username": "<USERNAME>",
+  "vcenter_password": "<PASSWORD>",
+  "vcenter_datacenter": "<DATACENTER>"
+}
+----
+
+=== Ansible
+
+Once the VM is build and provisioned, Ansible will be installed and a playbook (with a basic role) will be applied as well. When all is done, Ansible and the dependencies will be removed again.
+
+=== Build
+
+The following command can be used for creating the VM, uploading to the VCenter and mark it as a template.
+
+[source,bash]
+----
+packer build  -var "git_commit=$(git rev-parse HEAD)" -var-file=creds.json CentOS_7.json
+----
+
+== Links
+
+Some links that have helped me to create a VM (Lost a few).
+
+Hardening page: https://www.lisenet.com/2017/centos-7-server-hardening-guide/
+
+https://github.com/elatov/elatov.github.io/blob/master/_posts/2018-11-16-use-packer-with-vmware-player-to-build-an-ova.md

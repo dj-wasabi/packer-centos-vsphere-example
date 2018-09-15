@@ -1,0 +1,10 @@
+# Restrict Dynamic Mounting and Unmounting of Filesystems
+
+blacklist usb-storage
+blacklist firewire-core
+
+{% if kernel_hardening_conf is defined and kernel_hardening_conf is iterable %}
+{% for entry in kernel_hardening_conf %}
+install {{ entry }} /bin/true
+{% endfor %}
+{% endif %}
