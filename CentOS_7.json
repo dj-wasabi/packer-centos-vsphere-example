@@ -67,7 +67,7 @@
       "disk_type_id": "0",
       "guest_os_type": "centos7-64",
       "headless": false,
-      "shutdown_command": "sudo /sbin/halt -p"",
+      "shutdown_command": "sudo /sbin/halt -p",
       "http_directory": "http",
       "vmx_remove_ethernet_interfaces": true,
       "boot_command": [
